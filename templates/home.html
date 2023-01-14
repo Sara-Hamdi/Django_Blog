@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Boards</title>
+    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css'%}">
+</head>
+
+<body>
+   <nav class="navbar navbar-expand-sm bg-info">
+<div class="container">
+<a class="nav-link text-white" href="#">Welcome {{user.username}}</a>
+<div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+<li class="nav-item">
+    {% if user.is_authenticated %}
+    <a class="text-white m-3" href="{% url 'password_change' %}">Settings</a>
+    <a class="text-white" href="{% url 'logout'%}">Logout</a>
+
+    {% else%}
+    <a class="btn btn-outline-light" href="{% url 'signup'%}">Sign up</a>
+    <a href="{% url 'login'%}" class="btn btn-dark">Login</a>
+    {% endif%}
+</li>
+    </ul>
+</div>
+
+</div>
+   </nav>
+   
+ <div class="container">
+        <table class="table my-4">
+            <thead>
+                <tr>
+                    <th class="shadow p-3 mb-5 rounded">Boards</th>
+                    <th class="shadow p-3 mb-5 rounded">Posts</th>
+                    <th class="shadow p-3 mb-5 rounded">Topics</th>
+                    <th class="shadow p-3 mb-5 rounded">Last Post</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for board in Boards%}
+                <tr>
+                    <td><a href="{%url 'board_topics' board.pk %}">{{board.name}}</a>
+                        <small class="text-muted d-block">{{board.describtion}}</small>
+                    </td>
+                    <td>{{board.get_posts_count}}</td>
+                    <td>{{board.topics.count}}</td>
+                    <td>
+                        {% with post=board.get_last_post%}
+                        {% if post%}
+                        by {{post.creator.username}} at {{post.created_date}}
+                        {%else%}
+                        <p class="text-muted">No Posts Yet!</p>
+                        {%endif%}
+                        {% endwith%}
+                    </td>
+
+                </tr>
+                {%endfor%}
+            </tbody>
+
+
+        </table>
+    
+</body>
+
+</html>
